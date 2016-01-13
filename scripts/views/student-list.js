@@ -24,14 +24,19 @@ var StudentListView = Backbone.View.extend({
         });
 
         this.myStudentCollection.add(newStudentModel);
+        
+        newStudentModel.save();
 
         this.render();
     },
 
 
     initialize: function() {
+
         // l'instanciant à l'intérieur de la vue
         this.myStudentCollection = new StudentCollection();
+
+        this.myStudentCollection.fetch();
 
         // On rend la vue une première fois 
         this.render();
