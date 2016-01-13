@@ -5,11 +5,44 @@ var StudentListView = Backbone.View.extend({
 
     events: {
         'submit form': 'addStudent',
-        // 'change input[type="radio"]': 'studentHere'
+        'change input[type="radio"]': 'hereStudent'
     },
 
+    hereStudent: function(event) {
+                var $input = $(event.currentTarget);
+                var inputValue = $input.val();
+
+                var studentLastname = $input.parents('li').attr('data-title');
+
+                // Je regarde dans ma collection si j'ai un model
+                // Qui porte le nom de celui sur lequel on a cliqué
+                // Si oui, on stocke dans TargetModel
+                var targetModel = this.myStudentCollection.findWhere({
+                    firstname: studentLastname
+                });
+
+                if (targetModel) {
+                    if (inputValue === 'here') {
+                        targetModel.set({
+                            here: true
+                        });
+
+                    } else {
+                        targetModel.set({
+                            here: false
+                        });
+
+                    }
+
+                     targetModel.save();
+                }
+
+
+                // this.updateCounter();
+            },
+
     addStudent: function(event) {
-        
+
         event.preventDefault();
 
         var $form = $(event.currentTarget);
@@ -19,12 +52,12 @@ var StudentListView = Backbone.View.extend({
         // Avec mes donées, je créé un nouvel etudiant tout beau tout neuf
         // Donc un nouveau model
         var newStudentModel = new StudentModel({
-            nom: studentLastname,
-            prenom: studentFirstname,
+            lastname: studentLastname,
+            firstname: studentFirstname,
         });
 
         this.myStudentCollection.add(newStudentModel);
-        
+
         newStudentModel.save();
 
         this.render();
@@ -33,7 +66,6 @@ var StudentListView = Backbone.View.extend({
 
     initialize: function() {
 
-        // l'instanciant à l'intérieur de la vue
         this.myStudentCollection = new StudentCollection();
 
         this.myStudentCollection.fetch();
@@ -68,14 +100,29 @@ var StudentListView = Backbone.View.extend({
     },
 
 
+    getTemplate: function(studentData) {
 
 
-        getTemplate: function(studentData) {
+                    var isHereChecked = '';
+                    var isNotHereChecked = 'checked';
 
 
-            var studentTemplate = '\
-            <h2>' + studentData.nom + '</h2>\
-            <h2>' + studentData.prenom + '</h2>\
+                    if (studentData.here) {
+                        isHereChecked = 'checked';
+                        isNotHereChecked = '';
+                    }
+
+
+        var studentTemplate = '\
+            <li data-title="' + studentData.lastname + '">\
+            <h2>' + studentData.lastname  + ' ' +  studentData.firstname + '</h2>\
+            <form>\
+             <label>Présent</label>\
+          <input ' + isHereChecked + ' type="radio" class+"student-here" name="student" value="here" />\
+            <label>Absent</label>\
+            <input ' + isNotHereChecked + ' type="radio" class+"student-nothere" name="student" value="not_here" />\
+            </form>\
+            </li>\
         ';
 
         // On retourne la string 

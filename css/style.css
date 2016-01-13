@@ -1,10 +1,11 @@
 /** 
 * author         Victor Espinet
-* @site          TD d'intégration
-* @version       v1
-* @lastmodified  2012-11-21
 */
 
 img {
 	max-width: 200px;
+}
+
+body {
+	color: green;
 }
